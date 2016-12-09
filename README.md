@@ -7,13 +7,13 @@ window.EmpatiJS
 window._
 ~~~ 
 
-- $
+- $ ( Node )
 ~~~ javascript
 _.$(selector)
 _.$('div')
 ~~~ 
 
-- $$
+- $$ ( NodeList )
 ~~~ javascript
 _.$$(selector)
 _.$$('div')
@@ -27,26 +27,26 @@ _.Ajax(url, object) // post
 _.Ajax('https://httpbin.org/post', {name: 'test',id: 0}) 
 ~~~
 
-- Elements 
+- Elements ( Array )
 ~~~ javascript
 _.Elements(selector)
 _.Elements('div')
 ~~~
 
-- Events
+- Events ( undefined )
 ~~~ javascript
 _.Events(selector, eventname, function)
 _.Events('#button', 'click', function(){ alert('clicked to #button') })
 ~~~
 
-- Event
+- Event ( undefined )
 ~~~ javascript
 _.Event[elementid][eventname] = function
 _.Event.elementid.eventname = function
 _.Event.button.click = function(){ alert('clicked to #button') }
 ~~~
 
-- Text
+- Text ( string )
 ~~~ javascript
 _.Text(selector)
 _.Text('p') 
