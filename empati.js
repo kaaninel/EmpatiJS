@@ -18,7 +18,7 @@ const _E = window.EmpatiJS = window._ = {
     return new Promise(function(res,rej){
       xhttp.onloadend = function () {
         let r;
-        if (xhttp.getResponseHeader("Content-Type")) r = JSON.parse(xhttp.responseText);
+        if (xhttp.getResponseHeader("Content-Type").indexOf("application/json") > -1) r = JSON.parse(xhttp.responseText);
         else r = xhttp.responseText;
         res(r);
       }
