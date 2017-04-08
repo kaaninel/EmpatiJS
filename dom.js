@@ -72,6 +72,16 @@ const templateRegulator = function(template){
   return template;
 }
 const Templates = window.Templates = {}
+const Elements = window.Elements = new Proxy({},{
+  get: function(target, property, receiver) {
+    return function(...x){
+      let specs = { _: property };
+      x.length && Object.assign(specs, x.shift());
+      specs.$ = x;
+      return specs;
+    }
+  }
+});
 
 class EmpatiElement{
   constructor(template, Root){
@@ -184,7 +194,6 @@ const empatiDom = {
       });
   }
 }
-
 if('EmpatiJS' in window) window.EmpatiJS.Dom = empatiDom;
 else throw "Initialize EmpatiJS first";
 
