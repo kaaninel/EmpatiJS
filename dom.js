@@ -95,6 +95,7 @@ class EmpatiElement{
     else
       this.Dom = document.createElement(template.tag);
     this.Dom.appendChild(document.createTextNode(''));
+    this.Dom.Root = Root;
     if(!iR)
       this.Observer = {
         Callbacks: [],
@@ -171,6 +172,8 @@ class CustomEmpatiElement extends EmpatiElement{
   }
 }
 
+const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
+
 const empatiDom = {
   Include: function(map){
     return Promise.all(map.map(x=>
@@ -194,6 +197,7 @@ const empatiDom = {
       });
   }
 }
+
 if('EmpatiJS' in window) window.EmpatiJS.Dom = empatiDom;
 else throw "Initialize EmpatiJS first";
 
