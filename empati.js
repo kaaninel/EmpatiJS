@@ -10,7 +10,7 @@
 const _E = window.EmpatiJS = window._ = {
   $: x => x[0] == '#' ? document.getElementById(x.substr(1)) : document.querySelector(x),
   $$: x => document.querySelectorAll(x),
-  Ajax: (x, z) => {
+  Ajax: (x, z, y) => {
     const xhttp = new XMLHttpRequest();
     const G = typeof z === 'undefined';
     xhttp.open(G ? "GET" : "POST", x);
@@ -18,7 +18,8 @@ const _E = window.EmpatiJS = window._ = {
     return new Promise(function(res,rej){
       xhttp.onloadend = function () {
         let r;
-        if (xhttp.getResponseHeader("Content-Type").indexOf("application/json") > -1) r = JSON.parse(xhttp.responseText);
+        if (xhttp.getResponseHeader("Content-Type") == "application/json") r = JSON.parse(xhttp.responseText);
+        if (xhttp.getResponseHeader("Content-Type") == "application/javascript" && y) r = eval("()=>{"+xhttp.responseText+"}")();
         else r = xhttp.responseText;
         res(r);
       }
