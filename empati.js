@@ -8,7 +8,15 @@
 "use strict";
 
 const _E = window.EmpatiJS = window._ = {
-  $: x => x[0] == '#' ? document.getElementById(x.substr(1)) : document.querySelector(x),
+  $: new Proxy(function(){},{
+    get: function(t, p){
+      return document.getElementById(p);
+    },
+    apply: function(t, thi, args){
+      const x = args.shift();
+      return x[0] == '#' ? document.getElementById(x.substr(1)) : document.querySelector(x)
+    }
+  }),
   $$: x => document.querySelectorAll(x),
   Ajax: (x, z, y) => {
     const xhttp = new XMLHttpRequest();
