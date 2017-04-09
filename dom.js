@@ -58,7 +58,6 @@ const idGenenerator = function(){
 }();
 
 const templateRegulator = function(template){
-  console.log(typeof template,template)
   const Regulator = (alias,real) => {
     if(alias in template && !(real in template)) {
       template[real] = template[alias];
@@ -128,6 +127,7 @@ class EmpatiElement{
   }
   Init(){
     this.Root.Observer.Callbacks.forEach(x=> x());
+    if(this.Dom.init) this.Dom.init.apply(this);
   }
 
 }
@@ -149,8 +149,6 @@ class CustomEmpatiElement extends EmpatiElement{
           v.forEach((x,y)=> this.Dom.style[y] = x);
           break;
         case 'tag':
-          break;
-        case 'id':
           break;
         case 'value':
           const args = this.Root.Observer.Observe(v, x => this.Dom.value = x );
@@ -185,7 +183,6 @@ const empatiDom = {
   Register: function(x,n){
     const e = new CustomEmpatiElement(x);
     e.Init();
-    console.log(e);
     if(n)Templates[n] = (e);
     return e;
   },
