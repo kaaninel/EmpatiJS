@@ -185,8 +185,6 @@ class CustomEmpatiElement extends EmpatiElement{
   }
 }
 
-const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
-
 const empatiDom = {
   Include: function(map){
     return Promise.all(map.map(x=>
@@ -201,7 +199,6 @@ const empatiDom = {
   Create: function(x,r){
     x.isRoot = true;
     const e = new CustomEmpatiElement(x,r);
-    e.Init();
     return e;
   },
   AppendTemplate: function(file, a){
