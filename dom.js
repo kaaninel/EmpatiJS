@@ -105,8 +105,9 @@ class EmpatiElement{
     this.Dom.Root = Root;
     this.Dom.AppendTemplate = t => {
       const El = new CustomEmpatiElement(t, this.Root);
-      this.Dom.appendChild(El.Dom);
+      const e = this.Dom.appendChild(El.Dom);
       El.Init();
+      return e;
     }
     if(!iR)
       this.Observer = {
@@ -183,6 +184,8 @@ class CustomEmpatiElement extends EmpatiElement{
     this.Init();
   }
 }
+
+const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
 
 const empatiDom = {
   Include: function(map){
