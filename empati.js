@@ -44,7 +44,7 @@ const _E = window.EmpatiJS = window._ = {
     })
   }),
   Text: new Proxy({}, {
-    get: function (t, n) { return document.querySelectorAll(n).map(x => x.innerText).join(' '); },
-    set: function (t, n, v) { document.querySelectorAll(n).forEach(x=> x.innerText = v); }
+    get: function (t, n) { return _E.Elements(n).map(x => x.innerText).join(' '); },
+    set: function (t, n, v) { _E.Elements(n).forEach(x=> x.innerText = v); }
   })
 }
