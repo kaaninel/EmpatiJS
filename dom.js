@@ -68,6 +68,17 @@ const templateRegulator = function(template){
   Regulator('$','children');
   if(!('tag' in template)) throw "Template must have a tag";
   if(!('id'  in template)) template.id = idGenenerator(template.tag);
+  if(template.tag in Templates){
+    let tmpl = {} 
+    const tp = Templates[template.tag];
+    let children = tp.children.concat(template.children);
+    Object.assign(tmpl, tp);
+    Object.assign(tmpl, template);
+    tmpl.tag = tp.tag;
+    tmpl.children = children;
+    template = tmpl;
+    template.isRoot = true;
+  }
   return template;
 }
 const Templates = window.Templates = {}
@@ -84,17 +95,19 @@ const Elements = window.Elements = new Proxy({},{
 
 class EmpatiElement{
   constructor(template, Root){
-    const iR = typeof Root !== 'undefined';
+    let iR = typeof Root !== 'undefined';
+    if(template.isRoot) iR = false; 
     Root = this.Root = iR ? Root : this;
-    const Self = this;
     this.Cache = iR && 'Cache' in Root ? Root.Cache : {}
+    this.Dom = document.createElement(template.tag);
     this.Template = template;
-    if(template.tag in Templates)
-      this.Dom = Templates[template.tag].Dom;
-    else
-      this.Dom = document.createElement(template.tag);
     this.Dom.appendChild(document.createTextNode(''));
     this.Dom.Root = Root;
+    this.Dom.AppendTemplate = t => {
+      const El = new CustomEmpatiElement(t, this.Root);
+      this.Dom.appendChild(El.Dom);
+      El.Init();
+    }
     if(!iR)
       this.Observer = {
         Callbacks: [],
@@ -167,10 +180,9 @@ class CustomEmpatiElement extends EmpatiElement{
           break;
       }
     });
+    this.Init();
   }
 }
-
-const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
 
 const empatiDom = {
   Include: function(map){
@@ -180,17 +192,20 @@ const empatiDom = {
           y => this.Register(y,x[0])
         )));
   },
-  Register: function(x,n){
-    const e = new CustomEmpatiElement(x);
+  Register: function(x, n){
+    Templates[n] = templateRegulator(x);
+  },
+  Create: function(x,r){
+    x.isRoot = true;
+    const e = new CustomEmpatiElement(x,r);
     e.Init();
-    if(n)Templates[n] = (e);
     return e;
   },
   AppendTemplate: function(file, a){
     a = a || document.body;
     window.EmpatiJS.Ajax(file, undefined, true).then(
       x=> {
-        a.appendChild(this.Register(x).Dom);
+        a.appendChild(this.Create(x).Dom);
       });
   }
 }
