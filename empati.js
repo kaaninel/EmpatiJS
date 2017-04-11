@@ -13,7 +13,7 @@ const _E = window.EmpatiJS = window._ = {
       return document.getElementById(p);
     },
     apply: function(t, thi, args){
-      const x = args[0];
+      const x = args.shift();
       return x[0] == '#' ? document.getElementById(x.substr(1)) : document.querySelector(x)
     }
   }),
@@ -27,7 +27,7 @@ const _E = window.EmpatiJS = window._ = {
       xhttp.onloadend = function () {
         let r;
         if (xhttp.getResponseHeader("Content-Type") == "application/json") r = JSON.parse(xhttp.responseText);
-        if (xhttp.getResponseHeader("Content-Type") == "application/javascript" && y) r = eval("()=>{"+xhttp.responseText+"}")();
+        if (xhttp.getResponseHeader("Content-Type") == "application/javascript" && y) r = eval("async ()=>{"+xhttp.responseText+"}")();
         else r = xhttp.responseText;
         res(r);
       }
@@ -44,7 +44,7 @@ const _E = window.EmpatiJS = window._ = {
     })
   }),
   Text: new Proxy({}, {
-    get: function (t, n) { return _E.Elements(n).map(x => x.innerText).join(' '); },
+    get: function (t, n) { return _E.Elements(n).map(x => x.innerText.trim()).join(' '); },
     set: function (t, n, v) { _E.Elements(n).forEach(x=> x.innerText = v); }
   })
 }
