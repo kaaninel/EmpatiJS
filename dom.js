@@ -168,7 +168,8 @@ class CustomEmpatiElement extends EmpatiElement{
           .forEach(x=>this.Dom.appendChild(x.Dom));
           break;
         case 'style':
-          v.forEach((x,y)=> this.Dom.style[y] = x);
+          if(v.$) this.Dom.className = v.$;
+          else v.forEach((x,y)=> this.Dom.style[y] = x);
           break;
         case 'tag':
           break;
@@ -197,29 +198,26 @@ const Style = function(){
   let id = -1;
   return function(o){
     const cc = x => x.replace(/([A-Z])/g, (x)=> "-"+ x.toLowerCase());
-    const a = {};
-    for(let i of o)
-      a[i] = (cc(i) + ":" + o[i].toString());
-    const ruls = Object.values(a).join(';');
+    const a = [];
+    for(let i in o)
+      a.push(cc(i) + ":" + o[i].toString());
+    const ruls = a.join(';');
     id++;
     const style = ".c"+id+" { " + ruls + " } ";
     empatiDom.StyleSheet.insertRule(style, id);
     return new Proxy({Orgin:o, Cv: a, C: style, Id: id}, {
       get: (t, n) => {
+        if(n == "$") return "c" + t.Id;
         return t.Orgin[n];
       },
       set: (t, n, v) => {
         t.Orgin[n] = v;
-        t.Cv[n] = (cc(i) + ":" + o[i].toString());
-        const rul = Object.values(a).join(';');
-        const styl = ".c"+tid+" { " + ruls + " } ";
-
+        empatiDom.StyleSheet.cssRules[t.Id].style[n] = v;
+        return v;
       }
     });
   }
-}
-
-const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
+}()
 
 const empatiDom = {
   Include: function(map){
@@ -249,7 +247,8 @@ const empatiDom = {
     style.appendChild(document.createTextNode(""));
     document.head.appendChild(style);
     return style.sheet;
-  })()
+  })(),
+  Style
 }
 
 if('EmpatiJS' in window) window.EmpatiJS.Dom = empatiDom;
