@@ -13,7 +13,7 @@ const _E = window.EmpatiJS = window._ = {
       return document.getElementById(p);
     },
     apply: function(t, thi, args){
-      const x = args.shift();
+      const x = args[0];
       return x[0] == '#' ? document.getElementById(x.substr(1)) : document.querySelector(x)
     }
   }),
