@@ -24,30 +24,35 @@ const ParamNames = function (fn) {
     : result;
 }
 
-
-Object.prototype.forEach = function(f){
-  for(let i in this) if(this.hasOwnProperty(i)) f(this[i], i);
+const DefineObjPrototype = function(k, f){
+  Object.defineProperty(Object.prototype, k, {
+      value: f,
+      enumerable: false,
+  });
 }
 
-Object.prototype.Map = function(f){
+DefineObjPrototype('forEach', function(f){
+  for(let i in this) if(this.hasOwnProperty(i)) f(this[i], i);
+});
+DefineObjPrototype('Map', function(f){
   const O = {}
   for(let i in this) if(this.hasOwnProperty(i)) O[i] = f(this[i], i);
   return O;
-}
+});
 
-Object.prototype.Filter = function(f){
+DefineObjPrototype('Filter', function(f){
   const O = {};
   for(let i in this) if(this.hasOwnProperty(i) && f(this[i], i)) O[i] = this[i];
   return O;
-}
+});
 
-Object.prototype.map = function(f){
+DefineObjPrototype('map', function(f){
   for(let i in this) if(this.hasOwnProperty(i)) this[i] = f(this[i], i);
-}
+});
 
-Object.prototype.filter = function(f){
+DefineObjPrototype('filter', function(f){
   for(let i in this) if(this.hasOwnProperty(i) && !f(this[i], i)) delete this[i];
-}
+});
 
 const idGenenerator = function(){
   const counter = {};
@@ -108,6 +113,9 @@ class EmpatiElement{
       const e = this.Dom.appendChild(El.Dom);
       El.Init();
       return e;
+    }
+    this.Destroy = () => {
+      
     }
     if(!iR)
       this.Observer = {
@@ -185,13 +193,41 @@ class CustomEmpatiElement extends EmpatiElement{
   }
 }
 
+const Style = function(){
+  let id = -1;
+  return function(o){
+    const cc = x => x.replace(/([A-Z])/g, (x)=> "-"+ x.toLowerCase());
+    const a = {};
+    for(let i of o)
+      a[i] = (cc(i) + ":" + o[i].toString());
+    const ruls = Object.values(a).join(';');
+    id++;
+    const style = ".c"+id+" { " + ruls + " } ";
+    empatiDom.StyleSheet.insertRule(style, id);
+    return new Proxy({Orgin:o, Cv: a, C: style, Id: id}, {
+      get: (t, n) => {
+        return t.Orgin[n];
+      },
+      set: (t, n, v) => {
+        t.Orgin[n] = v;
+        t.Cv[n] = (cc(i) + ":" + o[i].toString());
+        const rul = Object.values(a).join(';');
+        const styl = ".c"+tid+" { " + ruls + " } ";
+
+      }
+    });
+  }
+}
+
+const R = new CustomEmpatiElement({_:"input",attr:{type:"hidden"},id:"Root"});
+
 const empatiDom = {
   Include: function(map){
-    return Promise.all(map.map(x=>
-      window.EmpatiJS.Ajax(x[1], undefined, true)
-        .then(
-          y => this.Register(y,x[0])
-        )));
+    return Promise.all(map.map(x=>{
+      if(x[0] in Templates) return Promise.resolve();
+      return window.EmpatiJS.Ajax(x[1], undefined, true)
+        .then( y => this.Register(y,x[0]) );
+      }));
   },
   Register: function(x, n){
     Templates[n] = templateRegulator(x);
@@ -207,7 +243,13 @@ const empatiDom = {
       x=> {
         a.appendChild(this.Create(x).Dom);
       });
-  }
+  },
+  StyleSheet: (function() {
+    const style = document.createElement("style");
+    style.appendChild(document.createTextNode(""));
+    document.head.appendChild(style);
+    return style.sheet;
+  })()
 }
 
 if('EmpatiJS' in window) window.EmpatiJS.Dom = empatiDom;
