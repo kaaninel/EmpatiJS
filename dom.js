@@ -114,6 +114,10 @@ class EmpatiElement{
       El.Init();
       return e;
     }
+    this.Clear = () => {
+      while(this.Dom.firstChild)
+      this.Dom.removeChild(this.Dom.firstChild);
+    }
     this.Destroy = () => {
       
     }
@@ -124,6 +128,7 @@ class EmpatiElement{
         Observe: (v, cb)=>{
           if(typeof v === 'function'){
             const args = ParamNames(v);
+            console.log(args,this);
             Root.Observer.Callbacks.push(function(){
               cb(v.apply(Root,args.map(x=>Root.Cache[x])));
             });
@@ -169,6 +174,7 @@ class CustomEmpatiElement extends EmpatiElement{
           break;
         case 'style':
           if(v.$) this.Dom.className = v.$;
+          else if(v.length) this.Dom.className = v.map(x=>x.$).join(" ");
           else v.forEach((x,y)=> this.Dom.style[y] = x);
           break;
         case 'tag':
@@ -196,14 +202,14 @@ class CustomEmpatiElement extends EmpatiElement{
 
 const Style = function(){
   let id = -1;
-  return function(o){
+  return function(o,ps){
     const cc = x => x.replace(/([A-Z])/g, (x)=> "-"+ x.toLowerCase());
     const a = [];
     for(let i in o)
       a.push(cc(i) + ":" + o[i].toString());
     const ruls = a.join(';');
     id++;
-    const style = ".c"+id+" { " + ruls + " } ";
+    const style = ".c"+id+(ps||"")+" { " + ruls + " } ";
     empatiDom.StyleSheet.insertRule(style, id);
     return new Proxy({Orgin:o, Cv: a, C: style, Id: id}, {
       get: (t, n) => {
