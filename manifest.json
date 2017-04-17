@@ -1,0 +1,6 @@
+{
+  "name": "EmpatiJS",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "landscape"
+}

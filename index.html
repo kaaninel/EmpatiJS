@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <link rel="manifest" href="manifest.json">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            html, body{
+                position: absolute;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+            }
+        </style>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=latin-ext" rel="stylesheet">
+    </head>
+    <body>
+        <script src="/empati.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', async function() {
+                await _.Include("*");
+                await _.Include([["KaanFlatTheme", "themes/kaanflat.js"]]);
+                await _.Dom.Include("*");
+                _.Dom.AppendTemplate('elements/router.js')
+            });
+        </script>
+    </body>
+</html>

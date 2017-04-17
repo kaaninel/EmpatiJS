@@ -1,0 +1,11 @@
+{
+  "name": "empatidom",
+  "version": "0.0.1",
+  "description": "Empati Dom",
+  "main": "empati.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Necati Kaan Inel",
+  "license": "UNLICENSED"
+}
