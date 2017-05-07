@@ -207,9 +207,13 @@ const empatiDom = {
     const e = new CustomEmpatiElement(x,r);
     return e;
   },
-  AppendTemplate: async function(file, a){
+  AppendLayout: async function(file, a){
     a = a || document.body;
     x = await window.EmpatiJS.Ajax(file, undefined, true);
+    a.appendChild(this.Create(x).Dom);
+  },
+  AppendTemplate: async function(x, a){
+    a = a || document.body;
     a.appendChild(this.Create(x).Dom);
   }
 }

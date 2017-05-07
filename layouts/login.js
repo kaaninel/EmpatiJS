@@ -30,11 +30,6 @@ const login_clicked = function(e){
   _.$.router.navigate("/");
 }
 
-const Visible = function(username, password){
-  if(username != "" && password != "") this.style.visibility = "visible";
-  else this.style.visibility = "hidden";
-}
-
 const Disabled = function(username, password){
   let b = true;
   const a = Array.from(this.Root.Dom.querySelectorAll("input[pattern]"));

@@ -7,37 +7,6 @@
 
 "use strict";
 
-const DefineObjPrototype = function(k, f){
-  Object.defineProperty(Object.prototype, k, {
-      value: f,
-      enumerable: false,
-  });
-}
-
-DefineObjPrototype('forEach', function(f){
-  for(let i in this) if(this.hasOwnProperty(i)) f(this[i], i);
-});
-
-DefineObjPrototype('Map', function(f){
-  const O = {}
-  for(let i in this) if(this.hasOwnProperty(i)) O[i] = f(this[i], i);
-  return O;
-});
-
-DefineObjPrototype('Filter', function(f){
-  const O = {};
-  for(let i in this) if(this.hasOwnProperty(i) && f(this[i], i)) O[i] = this[i];
-  return O;
-});
-
-DefineObjPrototype('map', function(f){
-  for(let i in this) if(this.hasOwnProperty(i)) this[i] = f(this[i], i);
-});
-
-DefineObjPrototype('filter', function(f){
-  for(let i in this) if(this.hasOwnProperty(i) && !f(this[i], i)) delete this[i];
-});
-
 const constr = document => ({
   $: new Proxy(function(){},{
     get: function(t, p){
@@ -79,13 +48,15 @@ const constr = document => ({
     get: function (t, n) { return _E.Elements(n).map(x => x.innerText.trim()).join(' '); },
     set: function (t, n, v) { _E.Elements(n).forEach(x=> x.innerText = v); }
   }),
+  LoadedPlugins: [],
   Include: async function(map){
     if(map == "*") {
       map = await window.EmpatiJS.Ajax('/plugins');
       map = map.map(x=>[x, "plugins/"+x+'.js']);
     }
     return Promise.all(map.map(x=>{
-      if(x[0] in this) return Promise.resolve();
+      if(this.LoadedPlugins.indexOf(x[0]) != -1) return Promise.resolve();
+      this.LoadedPlugins.push(x[0]);
       return window.EmpatiJS.Ajax(x[1], undefined, true)
     }));
   }

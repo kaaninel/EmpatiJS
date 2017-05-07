@@ -13,17 +13,18 @@
                 margin: 0;
             }
         </style>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=latin-ext" rel="stylesheet">
     </head>
     <body>
         <script src="/empati.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', async function() {
+                await _.Include([["object", "plugins/object.js"]]);
                 await _.Include("*");
                 await _.Include([["KaanFlatTheme", "themes/kaanflat.js"]]);
                 await _.Dom.Include("*");
-                _.Dom.AppendTemplate('elements/router.js')
+                _.Dom.AppendLayout('elements/router.js')
             });
         </script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&amp;subset=latin-ext" rel="stylesheet">
     </body>
 </html>
